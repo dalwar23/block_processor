@@ -51,4 +51,3 @@ def check_header(input_file):
             skip_rows = 0
     # Return
     return headers, n_cols, skip_rows
-

@@ -157,4 +157,4 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     command_center(input_file=args.input_file, column_indexes=args.columns, separator=args.separator,
-                    output_file=args.output_file)
+                   output_file=args.output_file)

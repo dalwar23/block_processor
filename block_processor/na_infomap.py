@@ -5,7 +5,6 @@ from __future__ import print_function
 
 # Import python libraries
 import sys
-import os
 import textwrap
 import argparse
 # Import custom python library
