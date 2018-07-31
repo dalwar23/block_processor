@@ -53,8 +53,24 @@ def compose_graph(input_file=None, delimiter=None, weighted=None):
     :return: networkx graph
     """
     # Check for headers
-    headers, n_cols, skip_n_rows = file_operations.check_header(input_file)
+    detected_delimiter, headers, n_cols, skip_n_rows = file_operations.check_header(input_file)
+
+    # Header ?
+    if headers:
+        if headers[0].startswith('#'):
+            pass
+        else:
+            print('Headers detected!', log_type='warn')
+            print('Please comment [#] or delete header!', log_type='hint')
+
+    print('Provided delimiter: {}'.format(delimiter), log_type='info')
+    print('Detected delimiter: {}'.format(detected_delimiter), log_type='info')
+
+    if detected_delimiter != delimiter:
+        print('Delimiter mismatch!', log_type='warn')
+
     # Check the number of columns in the file
+    print('Detected columns: {}'.format(n_cols), log_type='info')
     if n_cols < 2 or n_cols >= 4:
         print('Too less/many columns!', log_type='error')
         print('Hint: Check input file!', log_type='hint')
@@ -108,8 +124,20 @@ if __name__ == '__main__':
     parser.add_argument('-d', '--delimiter', action='store', dest='delimiter', required=False,
                         help='Separator for the input and output file. E.g. (,)/(";" need to be quoted)/tab/space.'
                              'Default is whitespace')
-    parser.add_argument('-w', '--weighted', action='store', dest='weighted', required=True,
+    parser.add_argument('-w', '--weighted', action='store', dest='weighted', required=False,
                         help='Boolean - yes/no if the file has weight column')
 
     args = parser.parse_args()
-    command_center(input_file=args.input_file, delimiter=args.delimiter, weighted=args.weighted)
+    # Double checking the arguments
+    if args.delimiter:
+        _delimiter = args.delimiter
+    else:
+        print('No delimiter provided! Using default (whitespace).....', log_type='info')
+        _delimiter = None
+    if args.weighted:
+        _weighted = args.weighted
+    else:
+        print('No weighted parameter provided! Using default (No).....', log_type='info')
+        _weighted = 'No'
+
+    command_center(input_file=args.input_file, delimiter=_delimiter, weighted=_weighted)

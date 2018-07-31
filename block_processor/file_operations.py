@@ -26,7 +26,7 @@ def check_header(input_file):
     """
     This function checks if the first line of the file is a header or not
     :param input_file: Input file path
-    :return: headers (if available), number of columns, skip rows
+    :return: detected delimiter, headers (if available), number of columns, skip rows
     """
     try:
         import csv
@@ -39,15 +39,16 @@ def check_header(input_file):
         first_five_lines = list(islice(f, 5))
         file_head = ''.join(map(str, first_five_lines))
         dialect = csv.Sniffer().sniff(file_head)
+        delimiter = dialect.delimiter
         # Sniff into the file and see if there is a header or not
         _headers = csv.Sniffer().has_header(file_head)
         if _headers:
-            headers = [file_head.split('\n')[0].split(dialect.delimiter)]
+            headers = file_head.split('\n')[0].split(delimiter)
             n_cols = len(headers)
             skip_rows = 1
         else:
             headers = None
-            n_cols = len(file_head.split('\n')[0].split(dialect.delimiter))
+            n_cols = len(file_head.split('\n')[0].split(delimiter))
             skip_rows = 0
     # Return
-    return headers, n_cols, skip_rows
+    return delimiter, headers, n_cols, skip_rows

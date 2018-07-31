@@ -24,14 +24,15 @@ import graph_composer
 
 
 # Find communities
-def find_communities(graph, options):
+def find_communities(graph, _options):
     """
     Partition network with the Infomap algorithm.
     Annotates nodes with 'community' id and return number of communities found.
     :param graph: A networkx graph created using "networkx.Graph"
-    :param options: Options for infomap
+    :param _options: Options for infomap
     :rtype: Total number of communities
     """
+    options = '--two-level'
     infomap_wrapper = infomap.Infomap(options)
 
     print("Building Infomap network from a NetworkX graph.....", log_type='info')
@@ -58,9 +59,10 @@ def find_communities(graph, options):
 def command_center(input_file=None, delimiter=None, weighted=None, options=None, dest=None):
     # Create a graph from dataset
     ntx_graph = graph_composer.compose_graph(input_file, delimiter, weighted)
-    total_communities, communities = find_communities(ntx_graph, options)
-    print('Total communities found with INFOMAP algorithm: ', color='green', log_type='info', end='')
-    print('{}'.format(total_communities), color='cyan', text_format='bold')
+    # Find Communities from the graph
+    # total_communities, communities = find_communities(ntx_graph, options)
+    # print('Total communities found with INFOMAP algorithm: ', color='green', log_type='info', end='')
+    # print('{}'.format(total_communities), color='cyan', text_format='bold')
 
 
 # Standard boilerplate for running this source code file as a standalone segment
@@ -89,7 +91,7 @@ if __name__ == '__main__':
     parser.add_argument('--weighted', action='store', dest='weighted', required=True,
                         help='Boolean - yes/no if the file has weight column')
     parser.add_argument('--options', action='store', dest='options', required=True,
-                        help='Options for the Infomap algorithm')
+                        help='Options for the Infomap algorithm (in a quoted string [no spaces])')
     parser.add_argument('--output-file', action='store', dest='destination', required=True,
                         help='Output file destination')
 
