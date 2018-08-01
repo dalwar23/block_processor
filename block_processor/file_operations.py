@@ -204,7 +204,7 @@ def generate_sanity_status(header_status=None, delimiter_status=None, column_sta
         print('OK', color='green', text_format='bold')
         status_code = status_code and 1
     elif delimiter_status == 2:
-        print('[!] OK (Warning!!)', color='orange', text_format='bold')
+        print('[!] OK', color='orange', text_format='bold')
         print('Program might not detect nodes if input file does not have default (whitespace) delimiter',
               log_type='info', color='orange')
         status_code = status_code and 1

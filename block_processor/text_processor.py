@@ -33,7 +33,7 @@ def numeric_mapping(data_frame, mapping_dict):
     :return: Python pandas data frame
     """
     # Map source and target row according to mapping dictionary
-    print('Mapping data frame (this may take some time).....', log_type='info')
+    print('Mapping data frame.....', log_type='info')
     data_frame['source'] = data_frame['source'].map(mapping_dict)
     data_frame['target'] = data_frame['target'].map(mapping_dict)
 

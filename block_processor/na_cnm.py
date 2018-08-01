@@ -7,6 +7,7 @@ from __future__ import print_function
 import sys
 import textwrap
 import argparse
+from memory_profiler import profile
 try:
     from pyrainbowterm import *
 except ImportError:
@@ -26,18 +27,27 @@ __email__ = 'dalwar.hossain@protonmail.com'
 
 
 # Clauset-Newman-Moore community detection
+@profile
 def cnm_find_communities(snap_graph):
     """
     This function detects community structures in a graph using Clauset-Newman-Moore algorithm
     :param snap_graph: A graph created with SNAP's snap.py module
-    :return: A python dictionary with detected communities, modularity of the network
+    :return: Total number of community, a python dictionary with detected communities, modularity of the network
     """
     print('Finding communities with CNM.....', log_type='info')
     community_vector = snap.TCnComV()
     modularity = snap.CommunityCNM(snap_graph, community_vector)
+    total_communities = len(community_vector)
+    # Create python dictionary of communities
+    community_id = 0
+    cnm_communities = {}
+    for community in community_vector:
+        for NI in community:
+            cnm_communities[NI] = community_id
+        community_id += 1
 
     # Return
-    return community_vector, modularity
+    return total_communities, cnm_communities, modularity
 
 
 # Command Center
@@ -52,13 +62,10 @@ def command_center(input_file=None, delimiter=None, weighted=None):
     # Create SNAP graph
     snap_graph = graph_composer.compose_snap_graph(input_file, delimiter, weighted)
     # Detect communities
-    community_vector, modularity = cnm_find_communities(snap_graph)
+    total_communities, cnm_communities, modularity = cnm_find_communities(snap_graph)
 
-    for Cmty in community_vector:
-        print("Community: ")
-        for NI in Cmty:
-            print(NI)
-    print("The modularity of the network is %f" % modularity)
+    print('Total communities found with CNM algorithm: ', color='green', log_type='info', end='')
+    print('{}'.format(total_communities), color='cyan', text_format='bold')
 
 
 if __name__ == '__main__':

@@ -44,10 +44,11 @@ def compose_snap_graph(input_file=None, delimiter=None, weighted=None):
             delimiter = ' '  # Using default (whitespace) delimiter
         # Load edges list from input file
         print('Creating SNAP graph.....', log_type='info')
+        # snap.LoadEdgeList(snap.PUNGraph = snap graph type, input file, source column, destination column, delimiter)
         snap_graph = snap.LoadEdgeList(snap.PUNGraph, input_file, 0, 1, delimiter)
-        print('Trying to delete self edges.....', log_type='info')
+        # print('Trying to delete self edges.....', log_type='info')
         # Making sure there are no self-edges
-        snap_graph = snap.DelSelfEdges(snap_graph)
+        # snap_graph = snap.DelSelfEdges(snap_graph)
 
         # Return
         return snap_graph
