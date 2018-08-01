@@ -19,81 +19,76 @@ except ImportError:
 # Import file_operations
 import file_operations
 
+# Import snap (Stanford SNAP python program for network analysis)
+from sanppy import snap
+
 # Source code meta data
 __author__ = 'Dalwar Hossain'
 __email__ = 'dalwar.hossain@protonmail.com'
 
 
-# Get data for value for graph
-def is_weighted(weighted=None):
+# Compose graph with stanford SNAP python snap.py
+def compose_snap_graph(input_file=None, delimiter=None, weighted=None):
     """
-    Gets the data value for networkx graph
-    :param weighted: yes/no boolean
-    :return: data value for networkx graph
+    This function creates a snap graph from provided file
+    :param input_file:  Input file path
+    :param delimiter: Column separator in the file
+    :param weighted: Simple yes/no if the input file is weighted or not
+    :return: snap graph
     """
-    # Assign data based on weighted or not
-    if weighted == "yes" or weighted == "Yes" or weighted == "Y" or weighted == "y":
-        data_ = True
-    elif weighted == "no" or weighted == "No" or weighted == "N" or weighted == "n":
-        data_ = False
+    sanity_status, file_is_weighted = file_operations.sanity_check(input_file, delimiter, weighted)
+
+    # Create a snap graph
+    if sanity_status == 1:
+        if delimiter is None:
+            delimiter = ' '  # Using default (whitespace) delimiter
+        # Load edges list from input file
+        print('Creating SNAP graph.....', log_type='info')
+        snap_graph = snap.LoadEdgeList(snap.PUNGraph, input_file, 0, 1, delimiter)
+        print('Trying to delete self edges.....', log_type='info')
+        # Making sure there are no self-edges
+        snap_graph = snap.DelSelfEdges(snap_graph)
+
+        # Return
+        return snap_graph
     else:
-        print('Please provide weighted (-w) argument with yes/no, y/n, Yes/No', log_type='error')
+        print('Sanity check failed!', log_type='error', color='red')
         sys.exit(1)
-    # Return
-    return data_
 
 
 # Compose graph with networkx library
-def compose_graph(input_file=None, delimiter=None, weighted=None):
+def compose_ntx_graph(input_file=None, delimiter=None, weighted=None):
     """
-
+    This function creates a networkx graph from provided file
     :param input_file: Input file path
-    :param delimiter: Optional separator for he column of the input file
+    :param delimiter: separator for the column of the input file
     :param weighted: Simple yes/no if the input file is weighted or not
     :return: networkx graph
     """
-    # Check for headers
-    detected_delimiter, headers, n_cols, skip_n_rows = file_operations.check_header(input_file)
-
-    # Header ?
-    if headers:
-        if headers[0].startswith('#'):
-            pass
-        else:
-            print('Headers detected!', log_type='warn')
-            print('Please comment [#] or delete header!', log_type='hint')
-
-    print('Provided delimiter: {}'.format(delimiter), log_type='info')
-    print('Detected delimiter: {}'.format(detected_delimiter), log_type='info')
-
-    if detected_delimiter != delimiter:
-        print('Delimiter mismatch!', log_type='warn')
-
-    # Check the number of columns in the file
-    print('Detected columns: {}'.format(n_cols), log_type='info')
-    if n_cols < 2 or n_cols >= 4:
-        print('Too less/many columns!', log_type='error')
-        print('Hint: Check input file!', log_type='hint')
-        sys.exit(1)
-
-    # Get data for networkx graph
-    file_is_weighted = is_weighted(weighted)
+    sanity_status, file_is_weighted = file_operations.sanity_check(input_file, delimiter, weighted)
 
     # Create a networkx graph from the edgelist
-    if file_is_weighted:
-        try:
-            ntx_graph = nx.read_weighted_edgelist(input_file, delimiter=delimiter)
-        except Exception as e:
-            print('Can not load input dataset. ERROR: {}'.format(e), color='red', log_type='error')
-            sys.exit(1)
+    if sanity_status == 1:
+        if file_is_weighted:
+            print('Creating Networkx weighted graph.....', log_type='info')
+            try:
+                ntx_graph = nx.read_weighted_edgelist(input_file, delimiter=delimiter, nodetype=int)
+            except Exception as e:
+                print('Can not create weighted networkx graph. ERROR: {}'.format(e), color='red', log_type='error')
+                sys.exit(1)
+        else:
+            print('Creating Networkx unweighted graph.....', log_type='info')
+            try:
+                ntx_graph = nx.read_edgelist(input_file, delimiter=delimiter, nodetype=int)
+            except Exception as e:
+                print('Can not create unweighted networkx graph. ERROR: {}'.format(e), color='red', log_type='error')
+                sys.exit(1)
+
+        # Return graph
+        return ntx_graph
     else:
-        try:
-            ntx_graph = nx.read_edgelist(input_file, delimiter=delimiter)
-        except Exception as e:
-            print('Can not load input dataset. ERROR: {}'.format(e), color='red', log_type='error')
-            sys.exit(1)
-    # Return graph
-    return ntx_graph
+        print('Sanity check failed!', log_type='error', color='red')
+        sys.exit(1)
 
 
 # Command Center
@@ -106,7 +101,7 @@ def command_center(input_file=None, delimiter=None, weighted=None):
     :rtype: NULL
     """
     # Read edges
-    ntx_graph = compose_graph(input_file, delimiter, weighted)
+    ntx_graph = compose_ntx_graph(input_file, delimiter, weighted)
     print('Total nodes in Graph: {}'.format(len(ntx_graph.nodes())))
     print('Total edges in Graph: {}'.format(len(ntx_graph.edges())))
 
@@ -127,7 +122,9 @@ if __name__ == '__main__':
     parser.add_argument('-w', '--weighted', action='store', dest='weighted', required=False,
                         help='Boolean - yes/no if the file has weight column')
 
+    # Parse arguments
     args = parser.parse_args()
+
     # Double checking the arguments
     if args.delimiter:
         _delimiter = args.delimiter

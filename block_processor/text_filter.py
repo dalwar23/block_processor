@@ -15,6 +15,10 @@ except ImportError:
     print('Try: pip install pyrainbowterm', log_type='hint')
     sys.exit(1)
 
+# Source code meta data
+__author__ = 'Dalwar Hossain'
+__email__ = 'dalwar.hossain@protonmail.com'
+
 
 # Create awk command
 def create_command(input_file, columns_to_use, column_separator, output_file):
@@ -155,6 +159,8 @@ if __name__ == "__main__":
     parser.add_argument('-o', '--output-file', action='store', dest='output_file', required=True,
                         help='Output file absolute path. E.g. /home/user/data/output/file_name.txt/.csv/.dat etc.')
 
+    # Parse arguments
     args = parser.parse_args()
+
     command_center(input_file=args.input_file, column_indexes=args.columns, separator=args.separator,
                    output_file=args.output_file)

@@ -249,5 +249,7 @@ if __name__ == '__main__':
     parser.add_argument('-w', '--weighted', action='store', dest='weighted', required=True,
                         help='Boolean - yes/no if the file has weight column')
 
+    # Parse arguments
     args = parser.parse_args()
+
     command_center(input_file=args.input_file, separator=args.separator, weighted=args.weighted)
