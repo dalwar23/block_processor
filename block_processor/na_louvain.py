@@ -27,6 +27,7 @@ __email__ = 'dalwar.hossain@protonmail.com'
 
 
 # Find communities
+@profile
 def louvain_find_communities(ntx_graph):
     """
     This function finds communities in a graph using louvain community detection algorithm
@@ -50,7 +51,8 @@ def command_center(input_file=None, delimiter=None, weighted=None):
     ntx_graph = graph_composer.compose_ntx_graph(input_file, delimiter, weighted)
     # Find Communities from the graph
     louvain_communities = louvain_find_communities(ntx_graph)
-    print(louvain_communities)
+
+    # Print information about detected communities
     total_communities = max(louvain_communities.values())
     print('Total communities found with LOUVAIN method algorithm: ', color='green', log_type='info', end='')
     print('{}'.format(total_communities), color='cyan', text_format='bold')

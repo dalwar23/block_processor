@@ -7,7 +7,6 @@ from __future__ import print_function
 import sys
 import textwrap
 import argparse
-from memory_profiler import profile
 try:
     from pyrainbowterm import *
 except ImportError:
@@ -26,6 +25,21 @@ __author__ = 'Dalwar Hossain'
 __email__ = 'dalwar.hossain@protonmail.com'
 
 
+# Run Clauset-Newman-Moore algorithm
+@profile
+def run_cnm(snap_graph, community_vector):
+    """
+    This functions will run CNM algorithm
+    :param snap_graph: A snap created graph of input file
+    :param community_vector: Detected communities
+    :return: modularity of the network and community vector
+    """
+    modularity = snap.CommunityCNM(snap_graph, community_vector)
+
+    # Return
+    return modularity, community_vector
+
+
 # Clauset-Newman-Moore community detection
 @profile
 def cnm_find_communities(snap_graph):
@@ -36,7 +50,7 @@ def cnm_find_communities(snap_graph):
     """
     print('Finding communities with CNM.....', log_type='info')
     community_vector = snap.TCnComV()
-    modularity = snap.CommunityCNM(snap_graph, community_vector)
+    modularity, community_vector = run_cnm(snap_graph, community_vector)
     total_communities = len(community_vector)
     # Create python dictionary of communities
     community_id = 0

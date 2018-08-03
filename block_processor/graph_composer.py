@@ -28,6 +28,7 @@ __email__ = 'dalwar.hossain@protonmail.com'
 
 
 # Compose graph with stanford SNAP python snap.py
+@profile
 def compose_snap_graph(input_file=None, delimiter=None, weighted=None):
     """
     This function creates a snap graph from provided file
@@ -58,6 +59,7 @@ def compose_snap_graph(input_file=None, delimiter=None, weighted=None):
 
 
 # Compose graph with networkx library
+@profile
 def compose_ntx_graph(input_file=None, delimiter=None, weighted=None):
     """
     This function creates a networkx graph from provided file

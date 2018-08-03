@@ -110,7 +110,7 @@ def check_delimiter(detected_delimiter=None, provided_delimiter=None):
 
     if detected_delimiter != provided_delimiter:
         delimiter_status = 2
-        print('Delimiter mismatch!', log_type='warn')
+        print('Delimiter mismatch!', log_type='warn', color='orange')
     elif detected_delimiter == provided_delimiter:
         delimiter_status = 1
 
@@ -186,7 +186,8 @@ def generate_sanity_status(header_status=None, delimiter_status=None, column_sta
     :return: status
     """
     status_code = 1
-    print('Sanity check..... COMPLETE', log_type='info')
+    print('Sanity check.....', log_type='info', end='')
+    print('COMPLETE', color='green', text_format='bold')
     print('--------------- Summary -------------------')
 
     # Header
@@ -206,7 +207,7 @@ def generate_sanity_status(header_status=None, delimiter_status=None, column_sta
     elif delimiter_status == 2:
         print('[!] OK', color='orange', text_format='bold')
         print('Program might not detect nodes if input file does not have default (whitespace) delimiter',
-              log_type='info', color='orange')
+              log_type='warn', color='orange')
         status_code = status_code and 1
 
     # Columns

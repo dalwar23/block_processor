@@ -27,7 +27,21 @@ __author__ = 'Dalwar Hossain'
 __email__ = 'dalwar.hossain@protonmail.com'
 
 
+# Run Infomap algorithm
+@profile
+def run_infomap(infomap_wrapper):
+    print("Finding communities with Infomap.....", log_type='info')
+    infomap_wrapper.run()
+    # Create tree from infomap_wrapper
+    tree = infomap_wrapper.tree
+    print("Found {} modules with code length: {}".format(tree.numTopModules(), tree.codelength()), log_type='info')
+
+    # Return
+    return tree
+
+
 # Find communities
+@profile
 def infomap_find_communities(graph, n_trials):
     """
     Partition network with the Infomap algorithm.
@@ -46,11 +60,7 @@ def infomap_find_communities(graph, n_trials):
     for e in graph.edges():
         infomap_wrapper.addLink(*e)
 
-    print("Finding communities with Infomap.....", log_type='info')
-    infomap_wrapper.run()
-    # Create tree from infomap_wrapper
-    tree = infomap_wrapper.tree
-    print("Found {} modules with code length: {}".format(tree.numTopModules(), tree.codelength()), log_type='info')
+    tree = run_infomap(infomap_wrapper)
 
     # Find communities
     communities = {}
