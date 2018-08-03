@@ -73,6 +73,7 @@ def command_center(input_file=None, delimiter=None, weighted=None):
     :param weighted: are the edges weighted?
     :return: <>
     """
+    print('Initializing.....', log_type='info')
     # Create SNAP graph
     snap_graph = graph_composer.compose_snap_graph(input_file, delimiter, weighted)
     # Detect communities

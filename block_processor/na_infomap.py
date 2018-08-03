@@ -28,7 +28,7 @@ __email__ = 'dalwar.hossain@protonmail.com'
 
 
 # Run Infomap algorithm
-@profile
+# @profile
 def run_infomap(infomap_wrapper):
     print("Finding communities with Infomap.....", log_type='info')
     infomap_wrapper.run()
@@ -41,7 +41,7 @@ def run_infomap(infomap_wrapper):
 
 
 # Find communities
-@profile
+# @profile
 def infomap_find_communities(graph, n_trials):
     """
     Partition network with the Infomap algorithm.
@@ -84,6 +84,7 @@ def command_center(input_file=None, delimiter=None, weighted=None, trials=None, 
     :param dest: destination folder
     :return: NULL
     """
+    print('Initializing.....', log_type='info')
     # Create a graph from dataset
     ntx_graph = graph_composer.compose_ntx_graph(input_file, delimiter, weighted)
     # Find Communities from the graph

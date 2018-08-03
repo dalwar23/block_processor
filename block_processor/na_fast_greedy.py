@@ -7,7 +7,6 @@ from __future__ import print_function
 import sys
 import textwrap
 import argparse
-# Import custom libraries
 try:
     from pyrainbowterm import *
 except ImportError:
@@ -15,10 +14,10 @@ except ImportError:
     print('Try: pip install pyrainbowterm', log_type='hint')
     sys.exit(1)
 
-# Import python-louvain library
-import community
+# Import fast greedy community detection algorithm
+from networkx.algorithms.community import modularity_max
 
-# Import graph composer
+# import graph_composer
 import graph_composer
 
 # Source code meta data
@@ -26,59 +25,61 @@ __author__ = 'Dalwar Hossain'
 __email__ = 'dalwar.hossain@protonmail.com'
 
 
-# Find communities
+# Clauset-Newman-Moore community detection
 # @profile
-def louvain_find_communities(ntx_graph):
+def fast_greedy_find_communities(ntx_graph):
     """
-    This function finds communities in a graph using louvain community detection algorithm
-    :param ntx_graph: A networkx graph
-    :return: A python dictionary of detected communities
+    This function detects community structures in a graph using Clauset-Newman-Moore algorithm
+    :param ntx_graph: A graph created with networkx
+    :return: Total number of community, a python dictionary with detected communities, modularity of the network
     """
-    print('Finding communities with louvain method.....', log_type='info')
-    try:
-        louvain_communities = community.best_partition(ntx_graph)
-    except Exception as e:
-        print('Can not detect communities with louvain method! ERROR: {}'.format(e))
-        sys.exit(1)
+    print('Finding communities with fast-greedy (Clauset-Newman-Moore) algorithm.....', log_type='info')
+    communities = modularity_max.greedy_modularity_communities(ntx_graph, weight=None)
 
     # Return
-    return louvain_communities
+    return communities
 
 
 # Command Center
 def command_center(input_file=None, delimiter=None, weighted=None):
     """
     This function controls the other functions
-    :param input_file: Input file path
-    :param delimiter: Column separator
-    :param weighted: Is the file has a weight column? (yes/no)
+    :param input_file: Input file with edges of the graph
+    :param delimiter: Field separator
+    :param weighted: are the edges weighted?
     :return: <>
     """
     print('Initializing.....', log_type='info')
-    # Create a graph from dataset
+    # Create SNAP graph
     ntx_graph = graph_composer.compose_ntx_graph(input_file, delimiter, weighted)
-    # Find Communities from the graph
-    louvain_communities = louvain_find_communities(ntx_graph)
+    # Detect communities
+    fast_greedy_communities_list = fast_greedy_find_communities(ntx_graph)
 
-    # Print information about detected communities
-    total_communities = max(louvain_communities.values())
-    print('Total communities found with LOUVAIN method algorithm: ', color='green', log_type='info', end='')
-    print('{}'.format(total_communities), color='cyan', text_format='bold')
+    # Create a dictionary of detected communities
+    fast_greedy_communities = {}
+    community_id = 1
+    for community in fast_greedy_communities_list:
+        for node in community:
+            fast_greedy_communities[node] = community_id
+        community_id += 1
+
+    print('Total communities found with fast greedy (CNM) algorithm: ', color='green', log_type='info', end='')
+    print('{}'.format(len(fast_greedy_communities_list)), color='cyan', text_format='bold')
 
 
-# Standard boilerplate for running this source code file as a standalone segment
 if __name__ == '__main__':
     """
     Parse arguments and follow through to mission control
     """
     # Create parser
-    parser = argparse.ArgumentParser(prog='na_louvain.py',
+    parser = argparse.ArgumentParser(prog='na_fast_greedy.py',
                                      usage='python %(prog)s <input_file> <options>',
                                      formatter_class=argparse.RawDescriptionHelpFormatter,
                                      description=textwrap.dedent('''\
-                                     This program uses Louvain method algorithm to detect communities in large-scale
-                                     networks. For more please visit: https://github.com/taynaud/python-louvain
-                                     '''),
+                                         This program uses Clauset-Newman-Moore(CNM) algorithm to detect communities in
+                                         large-scale networks.
+                                         For more please visit: https://github.com/taynaud/python-louvain
+                                         '''),
                                      epilog='',
                                      add_help=True)
 

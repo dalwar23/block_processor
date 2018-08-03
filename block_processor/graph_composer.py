@@ -28,7 +28,7 @@ __email__ = 'dalwar.hossain@protonmail.com'
 
 
 # Compose graph with stanford SNAP python snap.py
-@profile
+# @profile
 def compose_snap_graph(input_file=None, delimiter=None, weighted=None):
     """
     This function creates a snap graph from provided file
@@ -59,7 +59,7 @@ def compose_snap_graph(input_file=None, delimiter=None, weighted=None):
 
 
 # Compose graph with networkx library
-@profile
+# @profile
 def compose_ntx_graph(input_file=None, delimiter=None, weighted=None):
     """
     This function creates a networkx graph from provided file
@@ -103,6 +103,7 @@ def command_center(input_file=None, delimiter=None, weighted=None):
     :param weighted: Simple yes/no if the input file is weighted or not
     :rtype: NULL
     """
+    print('Initializing.....', log_type='info')
     # Read edges
     ntx_graph = compose_ntx_graph(input_file, delimiter, weighted)
     print('Total nodes in Graph: {}'.format(len(ntx_graph.nodes())))
