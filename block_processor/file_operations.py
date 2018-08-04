@@ -187,25 +187,25 @@ def generate_sanity_status(header_status=None, delimiter_status=None, column_sta
     """
     status_code = 1
     print('Sanity check.....', log_type='info', end='')
-    print('COMPLETE', color='green', text_format='bold')
+    print('COMPLETE', color='green')
     print('--------------- Summary -------------------')
 
     # Header
     print('Headers.....', log_type='info', end='')
     if header_status == 1:
-        print('OK', color='green', text_format='bold')
+        print('OK', color='green')
         status_code = status_code and 1
     elif header_status == 0:
-        print('NOT OK', color='red', text_format='bold')
+        print('NOT OK', color='red')
         status_code = status_code and 0
 
     # Delimiter
-    print('Delimiters.....', log_type='info', end='')
+    print('Delimiter.....', log_type='info', end='')
     if delimiter_status == 1:
-        print('OK', color='green', text_format='bold')
+        print('OK', color='green')
         status_code = status_code and 1
     elif delimiter_status == 2:
-        print('[!] OK', color='orange', text_format='bold')
+        print('[!] OK', color='orange')
         print('Program might not detect nodes if input file does not have default (whitespace) delimiter',
               log_type='warn', color='orange')
         status_code = status_code and 1
@@ -213,10 +213,10 @@ def generate_sanity_status(header_status=None, delimiter_status=None, column_sta
     # Columns
     print('Columns.....', log_type='info', end='')
     if column_status == 1:
-        print('OK', color='green', text_format='bold')
+        print('OK', color='green')
         status_code = status_code and 1
     elif column_status == 0:
-        print('NOT OK', color='red', text_format='bold')
+        print('NOT OK', color='red')
         status_code = status_code and 0
 
     print('-------------------------------------------')
@@ -232,7 +232,7 @@ def sanity_check(input_file=None, delimiter=None, weighted=None):
     :param input_file: Input file full path
     :param delimiter: Column separator in the input file
     :param weighted: Does the file contain edge weights or not
-    :return: sanity status and weighted or not
+    :return: sanity status
     """
     # Get file information (Header, delimiter, number of columns etc.)
     detected_delimiter, headers, n_cols, skip_n_rows = file_sniffer(input_file)
@@ -249,8 +249,5 @@ def sanity_check(input_file=None, delimiter=None, weighted=None):
     # Generate sanity status
     sanity_status = generate_sanity_status(header_status, delimiter_status, column_status)
 
-    # Get data for weighted networkx graph
-    file_is_weighted = is_weighted(weighted)
-
     # Return
-    return sanity_status, file_is_weighted
+    return sanity_status

@@ -37,7 +37,8 @@ def compose_snap_graph(input_file=None, delimiter=None, weighted=None):
     :param weighted: Simple yes/no if the input file is weighted or not
     :return: snap graph
     """
-    sanity_status, file_is_weighted = file_operations.sanity_check(input_file, delimiter, weighted)
+    # Check sanity status of input
+    sanity_status = file_operations.sanity_check(input_file, delimiter, weighted)
 
     # Create a snap graph
     if sanity_status == 1:
@@ -68,7 +69,11 @@ def compose_ntx_graph(input_file=None, delimiter=None, weighted=None):
     :param weighted: Simple yes/no if the input file is weighted or not
     :return: networkx graph
     """
-    sanity_status, file_is_weighted = file_operations.sanity_check(input_file, delimiter, weighted)
+    # Check sanity status of input
+    sanity_status = file_operations.sanity_check(input_file, delimiter, weighted)
+
+    # Get data for weighted networkx graph
+    file_is_weighted = file_operations.is_weighted(weighted)
 
     # Create a networkx graph from the edgelist
     if sanity_status == 1:
