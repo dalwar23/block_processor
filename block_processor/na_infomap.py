@@ -4,6 +4,7 @@
 from __future__ import print_function
 
 # Import python libraries
+import os
 import sys
 import textwrap
 import argparse
@@ -22,13 +23,16 @@ from infomap import infomap
 # Import graph_composer
 import graph_composer
 
+# Import file_operations
+import file_operations
+
 # Source code meta data
 __author__ = 'Dalwar Hossain'
 __email__ = 'dalwar.hossain@protonmail.com'
 
 
 # Run Infomap algorithm
-# @profile
+# @profile  # Uncomment to profile this function for memory usage with 'mprof'
 def run_infomap(infomap_wrapper):
     print("Finding communities with Infomap.....", log_type='info')
     infomap_wrapper.run()
@@ -41,7 +45,7 @@ def run_infomap(infomap_wrapper):
 
 
 # Find communities
-# @profile
+# @profile  # Uncomment to profile this function for memory usage with 'mprof'
 def infomap_find_communities(graph, n_trials):
     """
     Partition network with the Infomap algorithm.
@@ -98,6 +102,9 @@ if __name__ == '__main__':
     """
     Parse arguments and follow through to mission control
     """
+    # Initial message
+    file_operations.initial_message(os.path.basename(__file__), 'Infomap')
+
     # Create parser
     parser = argparse.ArgumentParser(prog='na_infomap.py',
                                      usage='python %(prog)s <input_file> <options>',
