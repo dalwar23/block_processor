@@ -4,6 +4,7 @@
 from __future__ import print_function
 
 # Import python libraries
+import os
 import sys
 import textwrap
 import argparse
@@ -20,13 +21,16 @@ from sanppy import snap
 # import graph_composer
 import graph_composer
 
+# Import file_operations
+import file_operations
+
 # Source code meta data
 __author__ = 'Dalwar Hossain'
 __email__ = 'dalwar.hossain@protonmail.com'
 
 
 # Run Clauset-Newman-Moore algorithm
-@profile
+# @profile  # Uncomment to profile this function for memory usage with 'mprof'
 def run_cnm(snap_graph, community_vector):
     """
     This functions will run CNM algorithm
@@ -41,7 +45,7 @@ def run_cnm(snap_graph, community_vector):
 
 
 # Clauset-Newman-Moore community detection
-@profile
+# @profile  # Uncomment to profile this function for memory usage with 'mprof'
 def cnm_find_communities(snap_graph):
     """
     This function detects community structures in a graph using Clauset-Newman-Moore algorithm
@@ -87,6 +91,9 @@ if __name__ == '__main__':
     """
     Parse arguments and follow through to mission control
     """
+    # Initial message
+    file_operations.initial_message(os.path.basename(__file__), '(SNAP) Clauset-Newman-Moore algorithm')
+
     # Create parser
     parser = argparse.ArgumentParser(prog='na_cnm.py',
                                      usage='python %(prog)s <input_file> <options>',

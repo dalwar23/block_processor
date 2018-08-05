@@ -4,6 +4,7 @@
 from __future__ import print_function
 
 # Import python libraries
+import os
 import sys
 import textwrap
 import argparse
@@ -20,13 +21,16 @@ from networkx.algorithms.community import modularity_max
 # import graph_composer
 import graph_composer
 
+# import file_operations
+import file_operations
+
 # Source code meta data
 __author__ = 'Dalwar Hossain'
 __email__ = 'dalwar.hossain@protonmail.com'
 
 
 # Clauset-Newman-Moore community detection
-# @profile
+# @profile  # Uncomment to profile this function for memory usage with 'mprof'
 def fast_greedy_find_communities(ntx_graph):
     """
     This function detects community structures in a graph using Clauset-Newman-Moore algorithm
@@ -71,6 +75,9 @@ if __name__ == '__main__':
     """
     Parse arguments and follow through to mission control
     """
+    # Initial message
+    file_operations.initial_message(os.path.basename(__file__), 'Clauset-Newman-Moore algorithm')
+
     # Create parser
     parser = argparse.ArgumentParser(prog='na_fast_greedy.py',
                                      usage='python %(prog)s <input_file> <options>',

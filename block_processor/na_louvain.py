@@ -4,9 +4,12 @@
 from __future__ import print_function
 
 # Import python libraries
+import os
 import sys
 import textwrap
 import argparse
+import time
+import datetime
 # Import custom libraries
 try:
     from pyrainbowterm import *
@@ -21,13 +24,16 @@ import community
 # Import graph composer
 import graph_composer
 
+# Import file_operations
+import file_operations
+
 # Source code meta data
 __author__ = 'Dalwar Hossain'
 __email__ = 'dalwar.hossain@protonmail.com'
 
 
 # Find communities
-# @profile
+# @profile  # Uncomment to profile this function for memory usage with 'mprof'
 def louvain_find_communities(ntx_graph):
     """
     This function finds communities in a graph using louvain community detection algorithm
@@ -36,7 +42,12 @@ def louvain_find_communities(ntx_graph):
     """
     print('Finding communities with louvain method.....', log_type='info')
     try:
+        start_time = time.time()
+        print('Louvain method started at: {}'.format(datetime.datetime.now().strftime("%H:%M:%S")), log_type='info')
         louvain_communities = community.best_partition(ntx_graph)
+        end_time = time.time() - start_time
+        print('Elapsed time: ', log_type='info', end='')
+        print('{}'.format(time.strftime("%H:%M:%S", time.gmtime(end_time))), color='cyan', text_format='bold')
     except Exception as e:
         print('Can not detect communities with louvain method! ERROR: {}'.format(e))
         sys.exit(1)
@@ -71,6 +82,9 @@ if __name__ == '__main__':
     """
     Parse arguments and follow through to mission control
     """
+    # Initial message
+    file_operations.initial_message(os.path.basename(__file__), 'Louvain method')
+
     # Create parser
     parser = argparse.ArgumentParser(prog='na_louvain.py',
                                      usage='python %(prog)s <input_file> <options>',
