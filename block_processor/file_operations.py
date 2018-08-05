@@ -5,6 +5,7 @@ from __future__ import print_function
 
 # Import python libraries
 import sys
+import datetime
 from itertools import islice
 
 # Import custom python libraries
@@ -251,3 +252,19 @@ def sanity_check(input_file=None, delimiter=None, weighted=None):
 
     # Return
     return sanity_status
+
+
+# Create initial message
+def initial_message(script=None, algorithm=None):
+    """
+    This function creates initial message
+    :param script: name of the script that will show the message
+    :param algorithm: name of the algorithm of that particular script
+    :return: <>
+    """
+    # Print a general help message
+    date_time = datetime.datetime.now()
+    print_string = "Network analysis and community detection with " + algorithm
+    print_string += " [ " + date_time.strftime("%d-%B-%Y %H:%M:%S") + " ]"
+    print('=' * len(print_string), print_string, "Need help?: python {} -h/--help".format(script),
+          '=' * len(print_string), sep='\n')
