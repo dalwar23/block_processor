@@ -60,7 +60,7 @@ def compose_snap_graph(input_file=None, delimiter=None, weighted=None):
 
 
 # Compose graph with networkx library
-# @profile  # Uncomment to profile this function for memory usage with 'mprof'
+@profile  # Uncomment to profile this function for memory usage with 'mprof'
 def compose_ntx_graph(input_file=None, delimiter=None, weighted=None):
     """
     This function creates a networkx graph from provided file

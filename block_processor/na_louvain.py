@@ -33,7 +33,7 @@ __email__ = 'dalwar.hossain@protonmail.com'
 
 
 # Find communities
-# @profile  # Uncomment to profile this function for memory usage with 'mprof'
+@profile  # Uncomment to profile this function for memory usage with 'mprof'
 def louvain_find_communities(ntx_graph):
     """
     This function finds communities in a graph using louvain community detection algorithm
@@ -56,25 +56,48 @@ def louvain_find_communities(ntx_graph):
     return louvain_communities
 
 
+# Create a function to run louvain method algorithm
+def run_louvain(input_file=None, delimiter=None, weighted=None, output=None):
+    """
+    This function finds community structures in graphs using louvain method
+    :param input_file: Input file path
+    :param delimiter: Column separator
+    :param weighted: Is the file has a weight column? (yes/no)
+    :param output: Boolean, yes/no if the output file will be created or not
+    :param output: yes/no, output will be created at the same directory
+    :return: file object/stdIO
+    """
+    # Create a graph from dataset
+    ntx_graph = graph_composer.compose_ntx_graph(input_file, delimiter, weighted)
+
+    # Find Communities from the graph
+    louvain_communities = louvain_find_communities(ntx_graph)
+
+    # Create output files (.grp and .pkl)
+    if output is None or output == 'Yes' or output == 'Y' or output == 'y' or output == 'yes':
+        output_file = file_operations.generate_output_filename(input_file, prefix='Louvain')
+        file_operations.create_community_file(louvain_communities, output_file)
+    else:
+        pass
+
+    # Print information about detected communities
+    total_communities = len(list(set(louvain_communities.values())))
+    print('Total communities found with LOUVAIN method algorithm: ', color='green', log_type='info', end='')
+    print('{}'.format(total_communities), color='cyan', text_format='bold')
+
+
 # Command Center
-def command_center(input_file=None, delimiter=None, weighted=None):
+def command_center(input_file=None, delimiter=None, weighted=None, output=None):
     """
     This function controls the other functions
     :param input_file: Input file path
     :param delimiter: Column separator
     :param weighted: Is the file has a weight column? (yes/no)
+    :param output: Boolean, yes/no if the output file will be created or not
     :return: <>
     """
     print('Initializing.....', log_type='info')
-    # Create a graph from dataset
-    ntx_graph = graph_composer.compose_ntx_graph(input_file, delimiter, weighted)
-    # Find Communities from the graph
-    louvain_communities = louvain_find_communities(ntx_graph)
-
-    # Print information about detected communities
-    total_communities = max(louvain_communities.values())
-    print('Total communities found with LOUVAIN method algorithm: ', color='green', log_type='info', end='')
-    print('{}'.format(total_communities), color='cyan', text_format='bold')
+    run_louvain(input_file, delimiter, weighted, output)
 
 
 # Standard boilerplate for running this source code file as a standalone segment
@@ -103,6 +126,8 @@ if __name__ == '__main__':
                              'Default is comma (,)')
     parser.add_argument('-w', '--weighted', action='store', dest='weighted', required=False,
                         help='Boolean - yes/no if the file has weight column')
+    parser.add_argument('-o', '--output', action='store', dest='output', required=False,
+                        help='Boolean - yes/no (To create output file or not)')
 
     # Parse arguments
     args = parser.parse_args()
@@ -118,6 +143,11 @@ if __name__ == '__main__':
     else:
         print('No weighted parameter provided! Using default (No).....', log_type='info')
         _weighted = 'No'
+    if args.output:
+        _output = args.output
+    else:
+        print('No output parameter provided! Using default (Yes).....', log_type='info')
+        _output = 'Yes'
 
     # Command Center
-    command_center(input_file=args.input, delimiter=_delimiter, weighted=_weighted)
+    command_center(input_file=args.input, delimiter=_delimiter, weighted=_weighted, output=_output)

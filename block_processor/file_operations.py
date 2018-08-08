@@ -4,6 +4,7 @@
 from __future__ import print_function
 
 # Import python libraries
+import os
 import sys
 import datetime
 from itertools import islice
@@ -268,3 +269,104 @@ def initial_message(script=None, algorithm=None):
     print_string += " [ " + date_time.strftime("%d-%B-%Y %H:%M:%S") + " ]"
     print('=' * len(print_string), print_string, "Need help?: python {} -h/--help".format(script),
           '=' * len(print_string), sep='\n')
+
+
+# Get directory path for input/output data
+def get_dir_path(input_file=None):
+    """
+    This function extracts the directory path of input file and creates a new file name for the output file
+    :param input_file: A complete file path for input dataset
+    :return: A directory path and a file name
+    """
+    # Get input file's directory
+    input_dir = os.path.dirname(input_file)
+    if os.path.isdir(input_dir):
+        output_dir = input_dir
+    else:
+        print('Can not determine output directory!', log_type='error')
+        sys.exit(1)
+
+    # Return output path
+    return output_dir
+
+
+# Generate output file name
+def generate_output_filename(input_file=None, prefix=None):
+    """
+    This function generates appropriate output file name
+    :param input_file: A file path to input file
+    :param prefix: Prefix of output file
+    :return: output filename full path
+    """
+    splitter = '_'
+    # Get file name
+    input_file_name = os.path.basename(input_file)
+    # Create new file name
+    base_file_name, base_file_extension = os.path.splitext(input_file_name)
+    output_file_name = prefix + splitter + base_file_name + base_file_extension
+
+    # Get output directory
+    output_directory = get_dir_path(input_file)
+
+    # Output file full path
+    output_file = os.path.join(output_directory, output_file_name)
+
+    # Return
+    return output_file
+
+
+# Create a community file as output file
+def create_community_file(dict_communities=None, output_file=None):
+    """
+    This function creates the output file
+    :param dict_communities: A python dictionary with communities assigned to nodes
+    :param output_file: name and location of the output files (.grp) and (.pkl)
+    :return: <> file object <>
+    """
+    # Create pickled extension for saving data for further use
+    pickled_file = output_file.rsplit('.', 1)[0] + '.pkl'
+
+    # Create community extension for saving communities
+    community_file = output_file.rsplit('.', 1)[0] + '.grp'
+
+    # Put the dictionary data in a pickled jar for later use
+    if sys.version_info[0] == 2:
+        import cPickle as pickle
+    if sys.version_info[0] == 3:
+        import pickle
+
+    try:
+        print('Creating pickled jar of (.pkl) data.....', log_type='info')
+        with open(pickled_file, 'w') as pickled_file:
+            pickle.dump(dict_communities, pickled_file)
+    except Exception as e:
+        print('Can not create pickled data!!! ERROR: {}'.format(e), log_type='error')
+
+    # import json
+    #
+    # communities = json.dumps(dict_communities, sort_keys=True, indent=4)
+    #
+    # print('Creating community file.....', log_type='info')
+    # with open(output_file, 'w') as f:
+    #     f.write(communities)
+
+    # Import pandas
+    try:
+        import pandas as pd
+    except ImportError as e:
+        print('Can not import python pandas library! ERROR: {}'.format(e), log_type='error')
+        sys.exit(1)
+
+    # Create a pandas data frame from the dictionary
+    communities = pd.DataFrame(dict_communities.items(), columns=['node', 'cluster'], dtype=int)
+
+    # Generate list of nodes that belongs to same community
+    groups = communities.groupby('cluster')['node'].apply(list)
+
+    # Write to output file
+    try:
+        print('Creating community (.grp) file.....', log_type='info')
+        groups.to_csv(community_file, header=False)
+    except Exception as e:
+        print('Can not create output file! ERROR: {}'.format(e), log_type='error')
+        sys.exit(1)
