@@ -32,7 +32,7 @@ __email__ = 'dalwar.hossain@protonmail.com'
 
 
 # Run Infomap algorithm
-@profile  # Uncomment to profile this function for memory usage with 'mprof'
+# @profile  # Uncomment to profile this function for memory usage with 'mprof'
 def run_algorithm(infomap_wrapper):
     print("Finding communities with Infomap.....", log_type='info')
     infomap_wrapper.run()
