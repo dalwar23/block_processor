@@ -99,9 +99,7 @@ if __name__ == '__main__':
                                      usage='python %(prog)s <input_file> <options>',
                                      formatter_class=argparse.RawDescriptionHelpFormatter,
                                      description=textwrap.dedent('''\
-                                         This program uses Clauset-Newman-Moore(CNM) algorithm to detect communities in
-                                         large-scale networks.
-                                         For more please visit: https://github.com/taynaud/python-louvain
+                                         SNAP Clauset-Newman-Moore Algorithm
                                          '''),
                                      epilog='',
                                      add_help=True)
